@@ -1,190 +1,257 @@
-FZParam - Burp Suite Extension
-FZParam is a Burp Suite extension designed to assist in web application security testing by logging URLs with query parameters and fuzzing them for further analysis. It allows users to specify host patterns using regular expressions, customize the output file for logged URLs, and toggle logging on or off via a user-friendly interface.
-Features
-1. URL Logging
-
-Captures HTTP requests containing query parameters (e.g., example.com/path?a=1&b=2).
-Logs modified URLs to a specified output file after replacing query parameter values with FUZZ (e.g., example.com/path?a=FUZZ&b=FUZZ).
-Avoids duplicate logging by maintaining a set of already logged URLs.
-
-2. Host Filtering
-
-Filters requests based on host patterns defined using regular expressions.
-Supports up to 10 regex patterns for host matching.
-Default pattern: .*example\.com$ (can be modified in the UI).
-
-3. Customizable Output
-
-Allows users to specify the output file path for logged URLs.
-Validates the file path and ensures the directory exists before writing.
-
-4. User Interface
-
-Provides a dedicated tab (FZParam) in Burp Suite for configuration.
-Features:
-Add/remove host regex patterns dynamically (up to 10).
-Browse and set the output file path.
-Start/stop logging with a toggle button.
 
 
-Displays validation errors for invalid regex patterns or file paths.
+---
 
-5. Logging Control
+## FZParam - Burp Suite 插件
 
-Toggle logging on or off without unloading the extension.
-Clears the duplicate URL cache when logging is restarted.
+**FZParam** 是一个为 Web 应用安全测试设计的 Burp Suite 插件，功能包括记录带参数的 URL 并对其进行模糊测试（fuzzing）以辅助分析。用户可以通过正则表达式指定主机匹配规则、自定义输出文件路径，并通过友好的界面启用或禁用记录功能。
 
-Installation
-Prerequisites
+---
 
-Burp Suite Professional or Community Edition (compatible with the Montoya API).
-Java Development Kit (JDK): Required to build the plugin.
-Maven or Gradle: Recommended for building the plugin (if using a build tool).
+## 功能介绍
 
-Steps
+### 1. URL 记录
 
-Clone or Download the Repository
+* 捕获包含查询参数的 HTTP 请求（如 `example.com/path?a=1&b=2`）。
+* 将参数值替换为 `FUZZ` 后记录到指定输出文件（如 `example.com/path?a=FUZZ&b=FUZZ`）。
+* 利用集合去重机制避免重复记录。
 
-Clone this repository or download the source code:git clone <repository-url>
+### 2. 主机过滤
 
+* 根据用户定义的正则表达式匹配主机进行过滤。
+* 支持最多 10 条主机正则规则。
+* 默认规则：`.*example\.com$`（可在 UI 中修改）。
 
+### 3. 输出自定义
 
+* 允许用户指定输出文件的路径。
+* 在写入之前会验证路径是否有效并确保目录存在。
 
-Build the Plugin
+### 4. 图形界面
 
-Navigate to the project directory and build the plugin using your preferred build tool.
-If using Maven, run:mvn clean package
+插件将在 Burp Suite 中添加一个专属标签页 **FZParam**，包含如下功能：
 
+* 动态添加/删除主机正则规则（最多 10 条）。
+* 选择并设置输出文件路径。
+* 启动或停止记录的开关按钮。
+* 对无效的正则表达式或文件路径显示错误提示。
 
-The compiled JAR file will be in the target/ directory (e.g., FZParam.jar).
+### 5. 日志控制
 
+* 可以在不卸载插件的情况下启用或禁用记录功能。
+* 重新启用记录功能时，会清空已记录的 URL 缓存。
 
-Load the Plugin in Burp Suite
+---
 
-Open Burp Suite.
-Go to the Extensions tab (or Extender in older versions).
-Click Add, select Java as the extension type, and browse to the compiled FZParam.jar file.
-The plugin should load, and a new tab named FZParam will appear in the Burp Suite UI.
+## 安装指南
 
+### 先决条件
 
+* Burp Suite 专业版或社区版（兼容 Montoya API）。
+* Java 开发工具包（JDK）。
+* 推荐使用 Maven 或 Gradle 进行构建。
 
-Usage
-1. Configure the Plugin
+### 安装步骤
 
-Open the FZParam Tab:
-After loading the plugin, navigate to the FZParam tab in Burp Suite.
+1. **克隆或下载代码库**
 
+```bash
+git clone <repository-url>
+```
 
-Set Host Regex Patterns:
-The default regex is .*example\.com$. Modify it or add more patterns (up to 10) by clicking the + button.
-Example: To match *.example.com and *.test.com, add:.*\.example\.com$
+2. **构建插件**
+
+进入项目目录，使用构建工具构建插件。
+
+* 如果使用 Maven：
+
+```bash
+mvn clean package
+```
+
+构建完成后，JAR 文件将生成在 `target/` 目录下（如：`FZParam.jar`）。
+
+3. **加载插件到 Burp Suite**
+
+* 打开 Burp Suite。
+* 转到 **Extensions**（或旧版中的 **Extender**）标签页。
+* 点击 **Add**，选择类型为 **Java**，浏览选择刚编译好的 `FZParam.jar` 文件。
+* 插件加载成功后，将出现新的标签页 **FZParam**。
+
+---
+
+## 使用说明
+
+### 1. 配置插件
+
+#### 打开 FZParam 标签页
+
+插件加载后，在 Burp Suite 中进入 FZParam 标签页。
+
+#### 设置主机正则规则
+
+* 默认规则为 `.*example\.com$`。
+* 可点击 **+** 按钮添加更多规则（最多 10 条）。
+* 例如，匹配 `*.example.com` 和 `*.test.com` 可设置为：
+
+```
+.*\.example\.com$
 .*\.test\.com$
+```
 
+* 点击 **-** 可删除对应的规则。
 
-Click the - button next to a regex field to remove it.
+#### 设置输出文件路径
 
+* 默认路径为 `E:\SecTools\auto_param\FZParam.txt`。
+* 可点击 **Browse...** 按钮选择路径，或手动输入完整路径。
 
-Set Output File Path:
-The default output file is E:\SecTools\auto_param\FZParam.txt.
-Use the Browse... button to select a different file path, or manually enter a path in the text field.
+#### 启动记录
 
+* 点击 **Start Logging** 启动记录功能。
+* 按钮变为 **Stop Logging** 表示记录已开启。
 
-Start Logging:
-Click the Start Logging button to begin capturing URLs.
-The button will change to Stop Logging when logging is active.
+---
 
+### 2. 查看输出
 
+在 Burp 的 **Output**（输出）标签页中可查看日志：
 
-2. Monitor Output
+* 成功记录：`Logged URL: <modified-url>`
+* 被跳过的 URL：
 
-Check the Burp Suite Output tab (under Extensions > FZParam) for logs:
-Successful URL logging: Logged URL: <modified-url>
-Skipped URLs: Skipping URL (host does not match): <url> or Skipping duplicate URL: <url>
-Errors: Invalid regex: <regex> or Failed to write to file: <error>
+  * 主机不匹配：`Skipping URL (host does not match): <url>`
+  * 重复 URL：`Skipping duplicate URL: <url>`
+* 错误提示：
 
+  * 正则无效：`Invalid regex: <regex>`
+  * 写入失败：`Failed to write to file: <error>`
 
-The logged URLs will be written to the specified output file with query parameters fuzzed (e.g., example.com/path?a=FUZZ&b=FUZZ).
+记录的 URL 会写入到指定文件，参数值会被替换为 `FUZZ`，如：
 
-3. Stop Logging
+```
+example.com/path?a=FUZZ&b=FUZZ
+```
 
-Click the Stop Logging button to pause URL logging.
-You can restart logging at any time, which will clear the duplicate URL cache.
+---
 
-Example
-Scenario
-You want to log URLs from example.com and test.com domains with query parameters, fuzz the parameters, and save the results to a file.
-Steps
+### 3. 停止记录
 
-Configure Host Regex:
-In the FZParam tab, set the following regex patterns:.*\.example\.com$
+点击 **Stop Logging** 按钮即可暂停记录。
+
+重新点击 **Start Logging** 可以重新开始记录，同时清空 URL 去重缓存。
+
+---
+
+## 使用示例
+
+### 场景：
+
+你想记录来自 `example.com` 和 `test.com` 域名下的带参数 URL，将参数替换为 `FUZZ` 后保存至文件。
+
+### 步骤：
+
+1. **配置主机正则规则**
+
+```
+.*\.example\.com$
 .*\.test\.com$
+```
 
+2. **设置输出文件路径**
 
+例如设为：
 
+```
+C:\temp\fuzzed_urls.txt
+```
 
-Set Output File:
-Specify the output file as C:\temp\fuzzed_urls.txt.
+3. **开始记录**
 
+点击 **Start Logging**。
 
-Start Logging:
-Click Start Logging.
+4. **发送请求**
 
+在 Burp 中通过代理或 Repeater 发出如下请求：
 
-Send Requests:
-Use Burp Suite’s Proxy or Repeater to send requests like:GET http://sub.example.com/path?a=1&b=2
+```
+GET http://sub.example.com/path?a=1&b=2
 GET http://app.test.com/login?user=admin&pass=123
 GET http://other.com/no-match?x=5
+```
 
+5. **查看输出**
 
+文件 `C:\temp\fuzzed_urls.txt` 内容应为：
 
-
-Check Output:
-The file C:\temp\fuzzed_urls.txt will contain:http://sub.example.com/path?a=FUZZ&b=FUZZ
+```
+http://sub.example.com/path?a=FUZZ&b=FUZZ
 http://app.test.com/login?user=FUZZ&pass=FUZZ
+```
 
+来自 `other.com` 的 URL 不符合规则，因此被跳过。
 
-The other.com URL will be skipped because it doesn’t match the host patterns.
+---
 
+## 注意事项
 
+### 1. 正则表达式校验
 
-Notes
-1. Regex Validation
+* 正则表达式必须合法。
+* 如：`*.example.com` 是无效的，应使用 `.*\.example\.com$`。
 
-Ensure your regex patterns are valid. Invalid patterns (e.g., *.example.com without escaping the dot) will prevent logging from starting, and an error message will be shown.
+### 2. 输出文件权限
 
-2. Output File Permissions
+* 插件会验证路径是否有效并尝试创建目录。
+* 若路径无效或无写入权限，将显示错误提示。
 
-The plugin validates the output file path before starting logging. If the directory doesn’t exist, it will attempt to create it. If the file cannot be written to (e.g., due to permissions), an error will be displayed.
+### 3. 去重机制
 
-3. Duplicate URLs
+* 插件使用缓存避免记录重复 URL。
+* 每次重新开始记录时，会清空缓存。
 
-The plugin avoids logging duplicate URLs to prevent redundant entries. The duplicate cache is cleared when logging is restarted.
+### 4. 性能提示
 
-4. Performance
+* 插件可处理常规流量，但若请求数量极多、参数非常多，可能会影响性能。
+* 建议使用具体的主机正则表达式缩小匹配范围。
 
-The plugin is designed to handle typical web traffic, but logging a large number of requests with many query parameters may impact performance. Use specific regex patterns to filter hosts and reduce the number of logged URLs.
+---
 
-Troubleshooting
-1. "Invalid regex pattern" Error
+## 常见问题与故障排查
 
-Cause: The regex pattern is syntactically incorrect (e.g., unescaped special characters).
-Solution: Fix the regex pattern. For example, use .*\.example\.com$ instead of *.example.com.
+### 1. “Invalid regex pattern” 错误
 
-2. "Cannot write to file" Error
+* **原因**：正则语法错误。
+* **解决**：使用合法语法，如：`.*\.example\.com$`。
 
-Cause: The specified output file path is invalid or lacks write permissions.
-Solution: Ensure the directory exists and you have write permissions. Use the Browse... button to select a valid path.
+### 2. “Cannot write to file” 错误
 
-3. No URLs Logged
+* **原因**：路径不存在或没有写权限。
+* **解决**：确保目录存在且有写权限，建议使用 **Browse...** 按钮选择路径。
 
-Cause: Logging is disabled, or the host patterns don’t match any requests.
-Solution:
-Ensure the Start Logging button is toggled on.
-Verify that your regex patterns match the target hosts (check the Output tab for skipped URLs).
+### 3. 无 URL 被记录
 
+* **原因**：
 
+  * 记录功能未启用；
+  * 主机规则未匹配。
+* **解决**：
 
-Contributing
-If you encounter bugs or have feature requests, please submit an issue on the GitHub repository. Contributions are welcome via pull requests.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+  * 确保点击了 **Start Logging**；
+  * 检查正则表达式是否正确匹配请求主机（可查看 Output 输出）。
+
+---
+
+## 贡献说明
+
+若发现漏洞或有功能建议，欢迎在 GitHub 提 issue 或通过 Pull Request 贡献代码。
+
+---
+
+## 授权协议
+
+本项目基于 MIT 开源许可证，详情请参阅项目中的 LICENSE 文件。
+
+---
+
+如果你希望我帮你编写这个插件、部署测试、完善 README 或制作教学资料，也可以继续提问。
